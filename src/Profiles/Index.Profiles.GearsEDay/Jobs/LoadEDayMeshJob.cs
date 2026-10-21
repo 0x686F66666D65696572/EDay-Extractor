@@ -1,4 +1,5 @@
 using CUE4Parse.UE4.Assets.Exports;
+using CUE4Parse.UE4.Assets.Exports.GeometryCollection;
 using CUE4Parse.UE4.Assets.Exports.SkeletalMesh;
 using CUE4Parse.UE4.Assets.Exports.StaticMesh;
 using CUE4Parse_Conversion.Dto;
@@ -85,6 +86,16 @@ namespace Index.Profiles.GearsEDay.Jobs
         case USkeletalMesh skeletalMesh:
         {
           using var dto = new SkeletalMeshDto( skeletalMesh, EMeshQuality.All, ENaniteMeshFormat.NaniteFirst, exportMorphTarget: false );
+          return Build( dto, meshName );
+        }
+
+        case UGeometryCollection geometryCollection:
+        {
+          // Materials is a property; without mappings it's recovered from the skipped property data.
+          if ( geometryCollection.Materials.Length == 0 )
+            geometryCollection.Materials = PropertyRecovery.FindMaterialArray( geometryCollection );
+
+          using var dto = new StaticMeshDto( geometryCollection, ENaniteMeshFormat.NaniteFirst );
           return Build( dto, meshName );
         }
 

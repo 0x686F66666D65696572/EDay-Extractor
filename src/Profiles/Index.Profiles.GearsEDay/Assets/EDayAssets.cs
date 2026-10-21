@@ -31,6 +31,20 @@ namespace Index.Profiles.GearsEDay.Assets
     }
   }
 
+  /// <summary>
+  ///   Chaos destruction assets. E-Day stores several complete weapons only this way (e.g. the Gnasher).
+  /// </summary>
+  [AssetExportOptionsType( typeof( MeshAssetExportOptions ) )]
+  public class EDayGeometryCollectionAsset : MeshAsset
+  {
+    public override string TypeName => "Geometry Collection";
+
+    public EDayGeometryCollectionAsset( IAssetReference assetReference )
+      : base( assetReference )
+    {
+    }
+  }
+
   public class EDayTextureAssetFactory : AssetFactoryBase<DxgiTextureAsset>
   {
     public EDayTextureAssetFactory( IContainerProvider container )

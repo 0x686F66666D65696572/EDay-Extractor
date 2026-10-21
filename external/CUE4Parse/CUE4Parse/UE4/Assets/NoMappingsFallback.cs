@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using CUE4Parse.UE4.Assets.Exports;
+using CUE4Parse.UE4.Assets.Exports.GeometryCollection;
 using CUE4Parse.UE4.Assets.Exports.SkeletalMesh;
 using CUE4Parse.UE4.Assets.Exports.StaticMesh;
 using CUE4Parse.UE4.Assets.Exports.Texture;
@@ -37,7 +38,8 @@ public static class NoMappingsFallback
     /// Extra checks a trial parse must pass besides ending at the export end. Without them a wrong offset can
     /// still "succeed", e.g. a static mesh whose bCooked flag reads as false skips its render data entirely.
     /// <c>Slack</c> is how many bytes a validated parse may stop short of the export end: game-specific trailing
-    /// data CUE4Parse doesn't read is left over (4 bytes on E-Day static meshes, hundreds of KB on skeletal meshes).
+    /// data CUE4Parse doesn't read is left over (4 bytes on E-Day static meshes, ~1 KB on geometry collections,
+    /// hundreds of KB on skeletal meshes).
     /// </summary>
     public static readonly List<(Type Type, Func<UObject, bool> IsValid, long Slack)> Validators =
     [
@@ -48,6 +50,8 @@ public static class NoMappingsFallback
             LODModels.Length: > 0
         } sk && sk.LODModels.Any(l => l is { NumVertices: > 0, Sections.Length: > 0 }), long.MaxValue),
         (typeof(UTexture2D), o => ((UTexture2D) o).PlatformData is { SizeX: > 0, SizeY: > 0 }, 16),
+        (typeof(UGeometryCollection), o => ((UGeometryCollection) o).RenderData is { } rd
+            && (rd.MeshResources is not null || rd.NaniteResources is { PageStreamingStates.Length: > 0 }), 64 * 1024),
     ];
 
     /// <summary>
@@ -61,6 +65,7 @@ public static class NoMappingsFallback
             Ar.Position += 2; // FStripDataFlags
             return Ar.Read<uint>() == 1; // bCooked
         }),
+        (typeof(UGeometryCollection), Ar => Ar.Read<uint>() <= 1), // bIsCookedOrCooking
         (typeof(USkeletalMesh), Ar =>
         {
             Ar.Position += 2; // FStripDataFlags
@@ -111,6 +116,15 @@ public static class NoMappingsFallback
         return struc is UScriptClass && !mappings.Types.ContainsKey(struc.Name);
     }
 
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<UObject, byte[]> SkippedPropertyData = new();
+
+    /// <summary>
+    /// The raw (unversioned) property values that were skipped for <paramref name="obj"/>, or an empty array.
+    /// Callers can recover simple values from it, e.g. arrays of object references.
+    /// </summary>
+    public static byte[] GetSkippedPropertyData(UObject obj)
+        => SkippedPropertyData.TryGetValue(obj, out var data) ? data : [];
+
     /// <summary>
     /// Moves <paramref name="Ar"/> past the property block of <paramref name="obj"/>.
     /// Returns false when the native data start could not be determined; the archive is then at <paramref name="validPos"/>.
@@ -158,6 +172,10 @@ public static class NoMappingsFallback
             if (TryNativeParse(obj, type, Ar, p, validPos))
             {
                 OnSearchFinished?.Invoke(type.Name, obj.Name, tried, p - dataStart, sw.ElapsedMilliseconds);
+
+                peekAr.Position = dataStart;
+                SkippedPropertyData.AddOrUpdate(obj, peekAr.ReadBytes((int) (p - dataStart)));
+
                 Ar.Position = p;
                 return true;
             }

@@ -96,6 +96,14 @@ namespace Index.Profiles.GearsEDay.FileSystem
     }
   }
 
+  public class EDayGeometryCollectionNode : EDayFileNode, IFileSystemAssetNode<EDayGeometryCollectionAsset, EDayMeshAssetFactory<EDayGeometryCollectionAsset>>
+  {
+    public EDayGeometryCollectionNode( IFileSystemDevice device, GameFile gameFile, string className, IFileSystemNode parent )
+      : base( device, gameFile, className, parent )
+    {
+    }
+  }
+
   public class EDayTextNode : EDayFileNode, IFileSystemAssetNode<TextAsset, EDayTextAssetFactory>
   {
     public EDayTextNode( IFileSystemDevice device, GameFile gameFile, IFileSystemNode parent )

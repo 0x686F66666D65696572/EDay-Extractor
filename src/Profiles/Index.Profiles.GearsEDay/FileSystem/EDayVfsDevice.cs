@@ -86,7 +86,7 @@ namespace Index.Profiles.GearsEDay.FileSystem
     private IFileSystemNode BuildNodeTree( IReadOnlyDictionary<string, string> classes )
     {
       var root = new EDayDirectoryNode( this, ROOT_NAME );
-      int textures = 0, staticMeshes = 0, skeletalMeshes = 0, texts = 0;
+      int textures = 0, staticMeshes = 0, skeletalMeshes = 0, geometryCollections = 0, texts = 0;
 
       foreach ( var gameFile in Host!.Provider.Files.Values.OrderBy( x => x.Path, StringComparer.OrdinalIgnoreCase ) )
       {
@@ -99,14 +99,16 @@ namespace Index.Profiles.GearsEDay.FileSystem
           case EDayTextureNode: textures++; break;
           case EDayStaticMeshNode: staticMeshes++; break;
           case EDaySkeletalMeshNode: skeletalMeshes++; break;
+          case EDayGeometryCollectionNode: geometryCollections++; break;
           case EDayTextNode: texts++; break;
         }
 
         root.AddChild( node );
       }
 
-      Log.Information( "Listed {textures} textures, {static} static meshes, {skeletal} skeletal meshes, {text} text files",
-        textures, staticMeshes, skeletalMeshes, texts );
+      Log.Information( "Listed {textures} textures, {static} static meshes, {skeletal} skeletal meshes, " +
+        "{collections} geometry collections, {text} text files",
+        textures, staticMeshes, skeletalMeshes, geometryCollections, texts );
       return root;
     }
 
@@ -125,6 +127,7 @@ namespace Index.Profiles.GearsEDay.FileSystem
           "Texture2D" => new EDayTextureNode( this, gameFile, className, root ),
           "StaticMesh" => new EDayStaticMeshNode( this, gameFile, className, root ),
           "SkeletalMesh" => new EDaySkeletalMeshNode( this, gameFile, className, root ),
+          "GeometryCollection" => new EDayGeometryCollectionNode( this, gameFile, className, root ),
           _ => null
         };
       }
