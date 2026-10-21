@@ -59,10 +59,14 @@ namespace Index.Profiles.GearsEDay.Meshes
       if ( mesh is SkeletonDto skeleton && skeleton.Bones.Length > 0 )
         AddSkeleton( skeleton.Bones );
 
+      // The Nanite mesh (full detail) comes first when the asset has one; the regular LODs follow and are
+      // flagged as LODs so "Remove LODs" on export keeps only the best geometry.
       var lodNumber = 0;
+      var isFirst = true;
       foreach ( var lod in mesh.LODs )
       {
-        var lodNode = new Node( $"{_meshName}_LOD{lodNumber}", _scene.RootNode );
+        var lodName = lod.IsNanite ? $"{_meshName}_Nanite" : $"{_meshName}_LOD{lodNumber}";
+        var lodNode = new Node( lodName, _scene.RootNode );
         _scene.RootNode.Children.Add( lodNode );
 
         for ( var sectionIndex = 0; sectionIndex < lod.Sections.Length; sectionIndex++ )
@@ -71,18 +75,20 @@ namespace Index.Profiles.GearsEDay.Meshes
           if ( !section.IsValid || section.NumFaces <= 0 )
             continue;
 
-          var assimpMesh = BuildSectionMesh( lod, section, $"{_meshName}_LOD{lodNumber}_{sectionIndex}" );
+          var assimpMesh = BuildSectionMesh( lod, section, $"{lodName}_{sectionIndex}" );
           if ( assimpMesh is null )
             continue;
 
-          if ( lodNumber > 0 )
+          if ( !isFirst )
             _lodMeshNames.Add( assimpMesh.Name );
 
           lodNode.MeshIndices.Add( _scene.Meshes.Count );
           _scene.Meshes.Add( assimpMesh );
         }
 
-        lodNumber++;
+        if ( !lod.IsNanite )
+          lodNumber++;
+        isFirst = false;
       }
 
       if ( _scene.Materials.Count == 0 )

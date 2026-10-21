@@ -78,13 +78,13 @@ namespace Index.Profiles.GearsEDay.Jobs
       {
         case UStaticMesh staticMesh:
         {
-          using var dto = new StaticMeshDto( staticMesh, EMeshQuality.All );
+          using var dto = new StaticMeshDto( staticMesh, EMeshQuality.All, ENaniteMeshFormat.NaniteFirst );
           return Build( dto, meshName );
         }
 
         case USkeletalMesh skeletalMesh:
         {
-          using var dto = new SkeletalMeshDto( skeletalMesh, EMeshQuality.All, ENaniteMeshFormat.NoNanite, exportMorphTarget: false );
+          using var dto = new SkeletalMeshDto( skeletalMesh, EMeshQuality.All, ENaniteMeshFormat.NaniteFirst, exportMorphTarget: false );
           return Build( dto, meshName );
         }
 

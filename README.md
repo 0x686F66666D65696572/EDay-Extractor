@@ -48,18 +48,23 @@ data (vertices, a skeleton, texture dimensions) and ends at (or just before) the
 
 What that means in practice:
 
-- Meshes, skeletons, skin weights, material slot names and textures come through fine.
+- Meshes (including full-detail Nanite geometry), skeletons, skin weights, material slot names and textures come through fine.
 - Anything stored only in properties is unavailable: material parameter values, for example.
   A mesh's textures are found from the textures its materials import, and the diffuse/normal maps are picked by name
   (`_d`, `_nmr`, ...).
 - **If you have a `.usmap` for E-Day**, drop it into a `Mappings` folder next to `EDayExtractor.exe` (or in
   `%LOCALAPPDATA%\EDayExtractor\Mappings`) and it's used automatically for full property data.
 
+### Nanite meshes
+
+Most E-Day meshes (props, environments and characters) are **Nanite** meshes. Their full-detail geometry lives
+only in the Nanite data; the regular LODs are a heavily reduced fallback (for example 1,369 vs 102,454 vertices
+for a collectible helmet, or 33,695 vs 210,361 for Marcus). The viewer loads the Nanite geometry first, listed as
+`<name>_Nanite_<section>`, and keeps the fallback LODs in the mesh list (unticked, flagged as LODs). Skeletal Nanite
+meshes keep their skin weights. Use **Remove LODs** when exporting to get only the full-detail mesh.
+
 ### Known limitations
 
-- **Highest-detail LODs of some character meshes.** Many skeletal meshes keep their top LODs (LOD0/LOD1) in a
-  streamed form that isn't decoded yet; the viewer then shows the best LOD that is available (for Marcus,
-  ~34k vertices). The mesh list names the first available LOD `LOD0`.
 - Audio (Wwise), animations, materials, maps and blueprints are not listed yet; they are readable through CUE4Parse
   and are good candidates for future categories.
 
@@ -99,7 +104,7 @@ dotnet publish src/Index.App/Index.App.csproj -c Release -r win-x64 --self-conta
 - **Index / IndexV2** by Haus and contributors: the UI, viewers and export pipeline this tool is built on.
 - **CUE4Parse** by FabianFG and contributors (Apache-2.0, see `external/CUE4Parse/LICENSE` and `NOTICE`).
   Changes made here: `NoMappingsFallback.cs` (new), and small hooks in `UObject.cs`, `AbstractUePackage.cs`,
-  `FArchive.cs` and `MeshDto.cs` (conversion), each marked in the code.
+  `FArchive.cs` and `MeshDto.cs` (conversion: missing LOD info, Nanite on skeletal meshes), each marked in the code.
 - This project's own code is MIT licensed (see `LICENSE`).
 
 Gears of War: E-Day is © Microsoft / The Coalition. This is an unofficial fan tool; it ships no game data and only

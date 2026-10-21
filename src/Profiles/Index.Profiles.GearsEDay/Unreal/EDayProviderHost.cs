@@ -85,6 +85,10 @@ namespace Index.Profiles.GearsEDay.Unreal
       // Without mappings, read native data (meshes, textures) by skipping the unversioned property blocks.
       NoMappingsFallback.Enabled = mappingsPath is null;
 
+      // Most E-Day meshes are Nanite: their full-detail geometry is only in the Nanite pages,
+      // the regular LODs are a reduced fallback.
+      provider.ReadNaniteData = true;
+
       provider.Initialize();
       var mountedCount = provider.Mount();
       Log.Information( "Mounted {count} containers ({files} files) from {path}", mountedCount, provider.Files.Count, paksDirectory );
