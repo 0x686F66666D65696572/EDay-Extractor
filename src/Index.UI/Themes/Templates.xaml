@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/Button.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/CheckBox.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/ComboBox.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/GridView.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/GridSplitter.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/GroupBox.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/Label.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/ListView.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/Menu.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/ProgressBar.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/ScrollBar.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/ScrollViewer.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/TabView.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/TextBox.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/ToggleButton.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/ToolTip.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/Window.xaml" />
+
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/IxButton.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/IxIcon.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/IxProgressOverlay.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/IxTabExpander.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/IxTextBox.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/IxTreeView.xaml" />
+
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/IxWindow.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/IxDialogWindow.xaml" />
+
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Views/AssetExportOptionsViewBase.xaml" />
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Views/EditorView.xaml" />
+
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

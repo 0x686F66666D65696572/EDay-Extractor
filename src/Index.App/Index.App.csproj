@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+	<PackageIcon>Icon.ico</PackageIcon>
+	<ApplicationIcon>Icon.ico</ApplicationIcon>
+	<XamlDebuggingInformation>True</XamlDebuggingInformation>
+	<AssemblyName>EDayExtractor</AssemblyName>
+	<Product>E-Day Extractor</Product>
+	<AssemblyVersion>1.0.0.0</AssemblyVersion>
+	<FileVersion>1.0.0.0</FileVersion>
+	<RootNamespace>Index.App</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Index.Domain\Index.Domain.csproj" />
+    <ProjectReference Include="..\Index.UI\Index.UI.csproj" />
+    <ProjectReference Include="..\Modules\Index.Modules.DataExplorer\Index.Modules.DataExplorer.csproj" />
+    <ProjectReference Include="..\Modules\Index.Modules.JobManager\Index.Modules.JobManager.csproj" />
+    <ProjectReference Include="..\Modules\Index.Modules.Logging\Index.Modules.Logging.csproj" />
+    <ProjectReference Include="..\Modules\Index.Modules.MeshEditor\Index.Modules.MeshEditor.csproj" />
+    <ProjectReference Include="..\Modules\Index.Modules.TextEditor\Index.Modules.TextEditor.csproj" />
+    <ProjectReference Include="..\Modules\Index.Modules.TextureEditor\Index.Modules.TextureEditor.csproj" />
+    <ProjectReference Include="..\Profiles\Index.Profiles.GearsEDay\Index.Profiles.GearsEDay.csproj" />
+  </ItemGroup>
+
+	<PropertyGroup>
+		<BuildDate>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))</BuildDate>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+			<_Parameter1>BuildDate</_Parameter1>
+			<_Parameter2>$(BuildDate)</_Parameter2>
+		</AssemblyAttribute>
+	</ItemGroup>
+	
+  <ItemGroup>
+    <Resource Include="Icon.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\LauncherView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

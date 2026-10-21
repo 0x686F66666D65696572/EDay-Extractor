@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="Index.Modules.MeshEditor.Views.MeshView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Index.Modules.MeshEditor.Views"
+             xmlns:controls="clr-namespace:Index.Modules.MeshEditor.Controls"
+             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
+             xmlns:hx2d="clr-namespace:HelixToolkit.Wpf.SharpDX.Elements2D;assembly=HelixToolkit.SharpDX.Core.Wpf"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             Focusable="True"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Index.UI;component/Themes/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource Brushes.Background.Deeper}">
+        <hx:Viewport3DX x:Name="Viewport"
+                        TextBrush="{DynamicResource Brushes.Foreground.Static}"
+                        Background="{DynamicResource Brushes.Background.Deeper}"
+                        BackgroundColor="{DynamicResource Colors.Background.Deeper}"
+                        Camera="{Binding Camera, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}}"
+                        CameraInertiaFactor="0.7"
+                        CameraMode="Inspect"
+                        CameraRotationMode="Turntable"
+                        EffectsManager="{Binding EffectsManager, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}}"
+                        EnableSwapChainRendering="{Binding IsInitialized}"
+                        FXAALevel="High"
+                        IsMoveEnabled="True"
+                        IsZoomEnabled="True"
+                        ZoomDistanceLimitNear="0"
+                        EnableRenderFrustum="True"
+                        Focusable="{Binding IsFlycamEnabled, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}, Converter={StaticResource InverseBoolConverter}}"
+                        IsHitTestVisible="{Binding IsFlycamEnabled, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}, Converter={StaticResource InverseBoolConverter}}"
+                        ShowViewCube="{Binding IsFlycamEnabled, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}, Converter={StaticResource InverseBoolConverter}}">
+
+            <hx:Viewport3DX.InputBindings>
+                <MouseBinding Command="hx:ViewportCommands.Rotate"
+                              Gesture="RightClick" />
+                <MouseBinding Command="hx:ViewportCommands.Pan"
+                              Gesture="LeftClick" />
+                <MouseBinding Command="hx:ViewportCommands.ZoomExtents"
+                              Gesture="MiddleClick" />
+            </hx:Viewport3DX.InputBindings>
+
+            <hx:Element3DPresenter Content="{Binding Model, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}}" />
+            <!--<hx:DirectionalLight3D Direction="{Binding Camera.LookDirection, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}}"
+                                   Color="#FFF" />-->
+
+            <hx:PointLight3D Position="{Binding Camera.Position, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}}"
+                             Range="500000000"
+                             Attenuation="1,0,0"
+                             Color="#FFF" />
+
+            <hx:Viewport3DX.Content2D>
+                <hx2d:Panel2D IsHitTestVisible="False">
+                    <hx2d:TextModel2D Foreground="{DynamicResource Brushes.Foreground.Static}"
+                                      Text="{Binding ElementName=Viewport, Path=FrameRate,StringFormat=FPS: 0.00}" />
+
+                    <hx2d:StackPanel2D VerticalAlignment="Bottom"
+                                       Orientation="Vertical"
+                                       Visibility="{Binding IsFlycamEnabled, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}, Converter={StaticResource VisibilityConverter}}">
+                        <hx2d:StackPanel2D Orientation="Horizontal">
+                            <hx2d:TextModel2D Text="Position: (" Foreground="{DynamicResource Brushes.Foreground.Static}" />
+                            <hx2d:TextModel2D IsHitTestVisible="False"
+                                              Foreground="{DynamicResource Brushes.Foreground.Static}"
+                                              Text="{Binding Camera.Position, RelativeSource={RelativeSource AncestorType={x:Type local:MeshView}}, StringFormat=0.00}" />
+                            <hx2d:TextModel2D Text=")" Foreground="{DynamicResource Brushes.Foreground.Static}"/>
+
+                        </hx2d:StackPanel2D>
+                        <hx2d:TextModel2D IsHitTestVisible="False"
+                                          Foreground="{DynamicResource Brushes.Foreground.Static}"
+                                          Text="(W/A/S/D) Move | (Q/E) Up/Down | (Shift) 2x Speed | (R/F) +/- Speed | (LMB) Look" />
+                    </hx2d:StackPanel2D>
+                </hx2d:Panel2D>
+            </hx:Viewport3DX.Content2D>
+
+        </hx:Viewport3DX>
+
+
+    </Grid>
+</UserControl>

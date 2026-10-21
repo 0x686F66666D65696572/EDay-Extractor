@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:windows="clr-namespace:Index.UI.Windows">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Index.UI;component/Themes/Templates/Base/Window.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--#region Style: IxWindow -->
+    <Style TargetType="{x:Type windows:IxWindow}" BasedOn="{StaticResource {x:Type Window}}">
+    </Style>
+    <!--#endregion-->
+
+</ResourceDictionary>

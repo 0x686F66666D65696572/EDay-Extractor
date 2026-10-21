@@ -1,0 +1,88 @@
+﻿using System;
+using Index.Domain.Assets;
+using Index.UI.Commands;
+using Index.UI.Controls.Menus;
+using Prism.Commands;
+
+namespace Index.Modules.DataExplorer.ViewModels
+{
+
+  public class AssetNodeViewModel : NodeViewModelBase<AssetNodeViewModel>
+  {
+
+    #region Data Members
+
+    private readonly string _name;
+    private readonly IAssetReference _assetReference;
+
+    #endregion
+
+    #region Properties
+
+    public override string Name
+    {
+      get => _name;
+    }
+
+    internal IAssetReference AssetReference
+    {
+      get => _assetReference;
+    }
+
+    public Type AssetType
+    {
+      get;
+      set;
+    }
+
+    #endregion
+
+    #region Constructor
+
+    public AssetNodeViewModel( IAssetReference assetReference, string name = null )
+    {
+      _assetReference = assetReference;
+      _name = name ?? assetReference.Node.DisplayName;
+
+      DoubleClickCommand = new DelegateCommand( HandleDoubleClick );
+    }
+
+    public AssetNodeViewModel( string assetTypeName )
+    {
+      _name = assetTypeName;
+    }
+
+    #endregion
+
+    #region Overrides
+
+    protected override void OnConfigureContextMenu( MenuViewModelBuilder builder )
+    {
+      builder
+        .AddItem( "Open", item =>
+        {
+          item.Command( EditorCommands.OpenTabCommand, _assetReference );
+        } );
+        //.AddSeparator()
+        //.AddItem( "Properties" )
+        //.AddItem( "Extract" );
+    }
+
+    /// <summary>
+    ///   Screen readers and UI automation read tree items through ToString.
+    /// </summary>
+    public override string ToString()
+      => Name;
+
+    #endregion
+
+    #region Private Methods
+
+    private void HandleDoubleClick()
+      => EditorCommands.OpenTabCommand.Execute( _assetReference );
+
+    #endregion
+
+  }
+
+}

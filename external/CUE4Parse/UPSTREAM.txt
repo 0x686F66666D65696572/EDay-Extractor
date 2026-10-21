@@ -1,0 +1,1 @@
+Vendored from https://github.com/FabianFG/CUE4Parse at commit 6f7b06eefa22f3cc259d03bb9901a384cb4fb538 (2026-10-20).
