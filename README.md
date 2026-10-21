@@ -25,6 +25,16 @@ game's Unreal Engine 5 archives, in the same folder layout the game uses. Open a
    Double-click an asset to open it. In a viewer, **File > Export** saves it; the **Bulk Export** button in the
    Data Explorer exports many assets at once. Mesh exports can include the textures their materials use.
 
+### Choosing which meshes to export
+
+The mesh viewer's **Meshes** list has a checkbox per mesh, and exporting from the viewer only writes the ticked ones.
+
+- **Select all** at the top of the list ticks or unticks every mesh the search box currently shows. It shows a
+  partial mark when only some are ticked; clicking it then ticks them all.
+- Combine it with the search: type `Nanite` and tick **Select all** to export only the full-detail meshes, or type
+  `LOD2` to grab just one LOD.
+- **Remove LODs** / **Remove Volumes** in the export dialog still apply on top of your selection.
+
 The game folder you open is remembered in the launcher list, so next time it's a double-click.
 
 ### First launch

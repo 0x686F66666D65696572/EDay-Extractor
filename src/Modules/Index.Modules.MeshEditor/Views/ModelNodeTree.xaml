@@ -15,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -37,8 +38,24 @@
                             Icon="{x:Static ui:SegoeIcon.Search}"
                             Text="{Binding Scene.SearchTerm, UpdateSourceTrigger=PropertyChanged}" />
 
+        <!--#region Select All -->
+        <Border Grid.Row="2"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource Brushes.Tertiary.Border.Static}">
+            <CheckBox Margin="7,4,5,4"
+                      IsThreeState="False"
+                      IsChecked="{Binding Scene.AllMeshesVisible, Mode=TwoWay}"
+                      Focusable="False"
+                      ToolTip="Tick or untick every mesh shown below (only those matching the search). Unticked meshes are left out of exports.">
+                <TextBlock Text="Select all"
+                           Margin="4,0,0,0"
+                           Foreground="{DynamicResource Brushes.Foreground.Static}" />
+            </CheckBox>
+        </Border>
+        <!--#endregion-->
+
         <!--#region Node List -->
-        <ListView Grid.Row="2"
+        <ListView Grid.Row="3"
                   ItemsSource="{Binding Scene.Nodes}"
                   VirtualizingPanel.IsContainerVirtualizable="True"
                   VirtualizingPanel.IsVirtualizing="True"

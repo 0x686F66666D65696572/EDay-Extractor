@@ -34,6 +34,7 @@ namespace Index.Modules.MeshEditor.ViewModels
     private ObservableCollection<ModelNodeViewModel> _nodes;
 
     private ActionDebouncer _searchDebouncer;
+    private bool _isSettingAllMeshesVisible;
 
     #endregion
 
@@ -48,6 +49,18 @@ namespace Index.Modules.MeshEditor.ViewModels
     public bool ShowTextures { get; set; }
     [OnChangedMethod( nameof( OnShowWireframeChanged ) )]
     public bool ShowWireframe { get; set; }
+
+    /// <summary>
+    ///   The "Select all" checkbox over the meshes the search currently shows: true when all of them are ticked,
+    ///   false when none are, null when some are. Ticking/unticking it applies to all of those meshes, and since
+    ///   unticked meshes are left out of exports, it also picks what gets exported.
+    /// </summary>
+    [DoNotNotify]
+    public bool? AllMeshesVisible
+    {
+      get => GetAllMeshesVisible();
+      set => SetAllMeshesVisible( value );
+    }
 
     #endregion
 
@@ -86,6 +99,7 @@ namespace Index.Modules.MeshEditor.ViewModels
           meshNode.CullMode = SharpDX.Direct3D11.CullMode.Back;
 
           var nodeViewModel = new ModelNodeViewModel( meshNode );
+          nodeViewModel.PropertyChanged += OnNodePropertyChanged;
           if ( meshAsset.LodMeshNames.Contains( meshNode.Name ) )
           {
             nodeViewModel.IsVisible = false;
@@ -255,7 +269,56 @@ namespace Index.Modules.MeshEditor.ViewModels
         };
 
         Nodes = collectionView;
+        OnPropertyChanged( nameof( AllMeshesVisible ) );
       } );
+    }
+
+    private bool? GetAllMeshesVisible()
+    {
+      if ( Nodes is null )
+        return false;
+
+      bool anyVisible = false, anyHidden = false;
+      foreach ( ModelNodeViewModel node in Nodes )
+      {
+        if ( node.IsVisible )
+          anyVisible = true;
+        else
+          anyHidden = true;
+
+        if ( anyVisible && anyHidden )
+          return null;
+      }
+
+      return anyVisible;
+    }
+
+    private void SetAllMeshesVisible( bool? value )
+    {
+      if ( Nodes is null )
+        return;
+
+      // Clicking a partly ticked box selects everything (WPF would otherwise untick it).
+      var visible = GetAllMeshesVisible() is null || value == true;
+
+      _isSettingAllMeshesVisible = true;
+      try
+      {
+        foreach ( ModelNodeViewModel node in Nodes )
+          node.IsVisible = visible;
+      }
+      finally
+      {
+        _isSettingAllMeshesVisible = false;
+      }
+
+      OnPropertyChanged( nameof( AllMeshesVisible ) );
+    }
+
+    private void OnNodePropertyChanged( object sender, PropertyChangedEventArgs e )
+    {
+      if ( e.PropertyName == nameof( ModelNodeViewModel.IsVisible ) && !_isSettingAllMeshesVisible )
+        OnPropertyChanged( nameof( AllMeshesVisible ) );
     }
 
     private void OnShowTexturesChanged()
@@ -281,6 +344,7 @@ namespace Index.Modules.MeshEditor.ViewModels
       Dispatcher.BeginInvoke( () =>
       {
         Nodes.Refresh();
+        OnPropertyChanged( nameof( AllMeshesVisible ) );
       } );
     }
 
