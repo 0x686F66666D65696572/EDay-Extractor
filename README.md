@@ -4,7 +4,7 @@ An asset viewer and extractor for **Gears of War: E-Day** (PC / Xbox app), built
 [IndexV2](https://github.com/Wildenhaus/IndexV2) (via [PAK-Extractor](https://github.com/0x686F66666D65696572/PAK-Extractor))
 and [CUE4Parse](https://github.com/FabianFG/CUE4Parse).
 
-Point it at your game folder and it lists every texture, static mesh, skeletal mesh and config file in the
+Point it at your game folder and it lists every texture, static mesh, skeletal mesh, geometry collection and config file in the
 game's Unreal Engine 5 archives, in the same folder layout the game uses. Open anything to preview it, then export it.
 
 ## Using it
@@ -20,6 +20,7 @@ game's Unreal Engine 5 archives, in the same folder layout the game uses. Open a
    | **Texture** | `Texture2D` assets (BC1-7, uncompressed, virtual textures) | 2D preview | DDS, PNG, TGA, HDR, BMP, TIFF, JPEG |
    | **Static Mesh** | `StaticMesh` assets, all LODs | 3D viewer with textures | FBX, OBJ, glTF, DAE, ... (+ textures) |
    | **Skeletal Mesh** | `SkeletalMesh` assets with skeleton and skin weights | 3D viewer with textures | FBX, glTF, DAE, ... (+ textures) |
+   | **Geometry Collection** | Chaos destruction assets; several weapons' full models live only here (e.g. `COG_GnasherGeo_GP01_GeometryCollection`) | 3D viewer with textures | FBX, OBJ, glTF, DAE, ... (+ textures) |
    | **Text** | `.ini`, `.json`, `.xml`, `.txt`, `.uplugin`, ... | Text editor | Text |
 
    Double-click an asset to open it. In a viewer, **File > Export** saves it; the **Bulk Export** button in the
@@ -73,7 +74,15 @@ for a collectible helmet, or 33,695 vs 210,361 for Marcus). The viewer loads the
 `<name>_Nanite_<section>`, and keeps the fallback LODs in the mesh list (unticked, flagged as LODs). Skeletal Nanite
 meshes keep their skin weights. Use **Remove LODs** when exporting to get only the full-detail mesh.
 
+### Weapons: look in Geometry Collection
+
+Some weapons' skeletal mesh (e.g. `COG_Gnasher_GP01`) is only a placeholder quad in the game data. Their full
+model is the matching `...Geo_GP01_GeometryCollection` in the **Geometry Collection** category, which loads at full
+Nanite detail with one mesh per material (gun body, mods, scope, holo sight), so attachments can be unticked.
+Its material list is a property, so without mappings it is recovered from the raw property data.
+
 ### Known limitations
+
 
 - Audio (Wwise), animations, materials, maps and blueprints are not listed yet; they are readable through CUE4Parse
   and are good candidates for future categories.
